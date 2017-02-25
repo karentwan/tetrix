@@ -182,7 +182,7 @@ void Shape::init()
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
     int c = qrand() % 6;
 //    int c = 5;
-qDebug() << "c:" << c;
+//qDebug() << "c:" << c;
     //初始化
     for(int i = 0; i < 4; i++)
     {
@@ -244,7 +244,7 @@ bool Shape::canAddX(int x)
     int r = m_x + x + Configuration::GRID_WIDTH *  (4 - trimRight());
 //qDebug() << "canAddX :" << m_x
     bool b = m_backPanel->canMoveXY(x);
-qDebug() << "b:" << b;
+//qDebug() << "b:" << b;
     if( l <= 0 || r > m_width || !b)
         return false;
     return true;

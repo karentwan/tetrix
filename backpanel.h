@@ -45,6 +45,8 @@ public:
     void stopGame();
 
     void setStart(bool s);
+    //设置游戏水平
+    void setGameLevel(int g);
 
     /*
      * 判断Shape能不能向左右两边移动

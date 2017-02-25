@@ -49,6 +49,8 @@ private slots:
 
     void on_stopGameBtn_clicked();
 
+    void on_comboBox_currentIndexChanged(int index);
+
 private:
     Ui::Widget *ui;
     BackPanel *m_backPanel;

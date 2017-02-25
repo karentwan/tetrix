@@ -14,7 +14,7 @@ BackPanel::BackPanel(QWidget *parent) :
     setFocusPolicy(Qt::StrongFocus);
     //获得焦点
     setFocus();
-
+    m_start = false;
 }
 
 void BackPanel::suspendOrRun()
@@ -24,9 +24,23 @@ void BackPanel::suspendOrRun()
 
 void BackPanel::stopGame()
 {
+    setStart(false);
     m_thread->setRun(false);
     //清空数组
+    m_barrier->clear();
 
+    m_shape->destroy();
+    m_shape = NULL;
+
+    //删除线程
+//    delete m_thread;
+//    m_thread = NULL;
+    update();
+}
+
+void BackPanel::setStart(bool s)
+{
+    m_start = s;
 }
 
 void BackPanel::init()
@@ -96,8 +110,8 @@ bool BackPanel::canMoveXY(int x)
  */
 void BackPanel::shapeRun()
 {
-qDebug() << "shape run...";
-qDebug() << "m_shape:" << m_shape;
+//qDebug() << "shape run...";
+//qDebug() << "m_shape:" << m_shape;
     m_shape->addY();
     update();
 }
@@ -110,6 +124,8 @@ void BackPanel::acceptShape()
     m_barrier->accept(m_shape);
     m_shape->destroy();
     m_shape = new Shape;
+    //判断是否有满行
+    m_barrier->haveFullLine();
 }
 
 void BackPanel::setBackColor(QColor c)
@@ -136,6 +152,8 @@ void BackPanel::setNetColor(QColor c)
 
 void BackPanel::paintEvent(QPaintEvent *e)
 {
+    if( !m_start )
+        return;
     QPainter paint(this);
     paint.setRenderHint(QPainter::Antialiasing);
     if( m_back )
@@ -148,33 +166,44 @@ void BackPanel::paintEvent(QPaintEvent *e)
 
 void BackPanel::startGame()
 {
+    if( !m_thread )
+    {
+        m_thread = new Thread;
+        m_thread->setBackPanel(this);
+    }
     m_thread->start();
+
+    m_start = true;
+    update();
 }
 
 
 void BackPanel::keyPressEvent(QKeyEvent *e)
 {
+    if( !m_shape )
+        return;
     int k = e->key();
     switch( k )
     {
     case Qt::Key_Left:
-
         m_shape->addX(- Configuration::GRID_WIDTH);
         break;
     case Qt::Key_Right:
-
         m_shape->addX(Configuration::GRID_WIDTH);
         break;
     case Qt::Key_Up:
         m_shape->nextShape();
         break;
     case Qt::Key_Down:
-
-//        m_shape->addY(Configuration::GRID_WIDTH);
         m_shape->addY();
         break;
     }
     update();
+}
+
+void BackPanel::setGameLevel(int g)
+{
+    m_thread->setSleepTime(g);
 }
 
 void BackPanel::drawBack(QPainter &paint)
@@ -240,7 +269,7 @@ BackPanel::~BackPanel()
     }
     if( m_thread )
     {
-qDebug() << "m_thread destroy!";
+//qDebug() << "m_thread destroy!";
         delete m_thread;
         m_thread = NULL;
     }

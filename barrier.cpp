@@ -5,21 +5,83 @@
 #include "configuration.h"
 #include <QPen>
 
+
 int Barrier::ROW = 19;
 
 int Barrier::COLUMN = 15;
 
 Barrier::Barrier(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_mutex()
 {
     init();
 }
 
 void Barrier::init()
 {
-
+    //需要先初始化，不然就是随机数
+    for(int i = 0; i < 19; i++)
+    {
+        for(int j = 0; j < 15; j++)
+        {
+            m_barrers[i][j] = 0;
+        }
+    }
 }
 
+/**
+ * 消除满行，如果有满行则消除，如果没有就不消除
+ */
+void Barrier::haveFullLine()
+{
+
+    for(int i = 0; i < 19; i++)
+    {
+        bool flag = true;
+        for(int j = 0; j < 15; j++)
+        {
+//qDebug() << "j :" << j;
+//qDebug() << "m_barrers[i][j]:" << m_barrers[i][j];
+            if( m_barrers[i][j] == 0)
+            {
+                flag = false;
+                break;
+            }
+        }
+        if( flag )
+        {
+//qDebug() << "i:" << i;
+            deleteFullLine(i);
+        }
+    }
+}
+
+/**
+ * 删除满行
+ * @param i 行坐标
+ */
+void Barrier::deleteFullLine(int i)
+{
+//qDebug() << "delete Full line";
+    //删除满行
+    for(int j = 0; j < 15; j++)
+    {
+        m_barrers[i][j] = 0;
+    }
+    //将上面的内容往下面移动
+    for(int k = i; k > 0; k--)
+    {
+        for(int j = 0; j < 15; j++)
+        {
+            m_barrers[k][j] = m_barrers[k-1][j];
+        }
+    }
+}
+
+/**
+ * 绘制障碍
+ * @param paint
+ */
 void Barrier::drawMe(QPainter &paint)
 {
 //qDebug() << "barrier draw me !";
@@ -44,28 +106,28 @@ void Barrier::drawMe(QPainter &paint)
 }
 
 /**
- * @brief 判断y方向是否有障碍
+ * @brief 判断y方向是否有障碍，这个方法应该是线程安全的
  * @param y
  * @return true 表示有障碍，false表示没有障碍
  */
 bool Barrier::hasBrrerFromY(int x, int y, Shape *s)
 {
-//qDebug() << "x:" << x << "\ty:" << y;
+    m_mutex.lock();//加锁
     for(int i = 0; i < 4; i++)
     {
         for(int j =0; j < 4; j++)
         {
             if( m_barrers[y + i + 1][ x + j] == 1 && s->judgeShape(i, j))
             {
-//qDebug() << "y+i" << y + i << "\tx+j:" << x + j;
-//qDebug() << "m_barrers[y+i][x+j]:" << m_barrers[y+i][x+j];
-//qDebug() << "hashBarrer return true";
+                m_mutex.unlock();
                 return true;
             }
 
         }
     }
-   return false;
+    //解锁
+    m_mutex.unlock();
+    return false;
 }
 
 /**

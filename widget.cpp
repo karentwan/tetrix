@@ -96,3 +96,9 @@ void Widget::on_stopGameBtn_clicked()
 {
     m_backPanel->stopGame();
 }
+
+void Widget::on_comboBox_currentIndexChanged(int index)
+{
+qDebug() << "level :" << index;
+    int g = 7 - index;
+}

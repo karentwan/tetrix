@@ -2,6 +2,7 @@
 #define BARRIER_H
 
 #include <QObject>
+#include <QMutex>
 
 class QPainter;
 class Shape;
@@ -24,6 +25,10 @@ public:
     bool hasBarrerFromX(int x, int y, Shape *s);
 
     void clear();
+    //消除满行
+    void deleteFullLine(int i);
+
+    void haveFullLine();
 
 private:
     void init();
@@ -39,6 +44,7 @@ private :
 
     int m_barrers[19][15];
 
+    QMutex m_mutex;         //线程锁
 
 };
 
