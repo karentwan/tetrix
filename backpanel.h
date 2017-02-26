@@ -5,6 +5,7 @@
 #include "barrier.h"
 #include "shape.h"
 #include "thread.h"
+#include <QMutex>
 
 class BackPanel : public QWidget
 {
@@ -53,6 +54,8 @@ public:
      */
     bool canMoveXY(int x);
 
+    void moveXY(int x, int y);
+
     ~BackPanel();
 
 signals:
@@ -77,6 +80,8 @@ private:
     Shape *m_shape;     //形状
     Thread *m_thread;
     bool m_start;       //游戏是否开始
+
+    QMutex m_mutex;     //线程锁
 
 
 };

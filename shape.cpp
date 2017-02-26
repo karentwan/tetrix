@@ -233,6 +233,7 @@ void Shape::addX(int x)
 {
     if( canAddX(x))
         m_x = m_x + x;
+//qDebug() << "addX :" << x;
 }
 
 bool Shape::canAddX(int x)
@@ -332,7 +333,8 @@ int Shape::trimRight()
 
 bool Shape::canAddY(int y)
 {
-    int r = m_y + y;
+    int r = m_y;
+qDebug() << "canAddY :" << y;
     bool flag = m_backPanel->canMoveDown(y);
 //qDebug() << "flag:" << flag;
     int d = m_y + y + (4 - trimDown()) * Configuration::GRID_WIDTH;
@@ -345,7 +347,22 @@ bool Shape::canAddY(int y)
 void Shape::addY()
 {
     int y = Configuration::GRID_WIDTH;
-    if( canAddY(y))
+
+    m_canMoveDown = canAddY(y);
+
+    if( m_canMoveDown )
+        m_y = m_y + y;
+    //入如果不能向下移动说明该被Barrer吸收变成障碍
+    else
+    {
+        m_backPanel->acceptShape();
+    }
+}
+
+void Shape::addY(int y)
+{
+    m_canMoveDown = canAddY(y);
+    if( m_canMoveDown )
         m_y = m_y + y;
     //入如果不能向下移动说明该被Barrer吸收变成障碍
     else
@@ -369,6 +386,7 @@ void Shape::setBackPanel(BackPanel *b)
     m_backPanel = b;
 }
 
+
 void Shape::setXY(int x, int y)
 {
     m_x = x;
@@ -384,7 +402,7 @@ void Shape::getBarrer(int b[19][15])
 //qDebug() << "getBarrer!";
     //x、y比真实的场景少1
     int x = m_x > 0 ? (m_x / Configuration::GRID_WIDTH ) : 0;
-    int y = m_y / Configuration::GRID_WIDTH + 1;
+    int y = m_y / Configuration::GRID_WIDTH;
 
     for(int i = 0; i < 4; i++)
     {
@@ -422,4 +440,9 @@ void Shape::drawMe(QPainter &paint)
             }
         }
     }
+}
+
+Shape::~Shape()
+{
+
 }

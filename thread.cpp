@@ -7,7 +7,7 @@ Thread::Thread(QObject *parent) :
 {
     m_run = true;
     //休眠时间
-    m_sleepTime = 3;
+    m_sleepTime = 1000;
 
     m_suspend = false;
 }
@@ -43,6 +43,8 @@ void Thread::run()
     //线程运行
     while( m_run )
     {
+
+        msleep(m_sleepTime);
 //qDebug() << "run....";
         if( !m_suspend )
         {
@@ -50,6 +52,5 @@ void Thread::run()
         }
 //qDebug() << "m_backPanel:" << m_backPanel;
 
-        sleep(m_sleepTime);
     }
 }

@@ -5,6 +5,7 @@
 #include <QStyleOption>
 #include <QKeyEvent>
 
+
 BackPanel::BackPanel(QWidget *parent) :
     QWidget(parent),
     m_barrier(new Barrier)
@@ -63,7 +64,8 @@ void BackPanel::resizeEvent(QResizeEvent *e)
 {
     QWidget::resizeEvent(e);
 //qDebug() << "resize Event!";
-    m_shape->setWH(geometry().width(), geometry().height());
+//    m_shape->setWH(geometry().width(), geometry().height());
+    m_shape->setWH(geometry().width(), 475);
 }
 
 void BackPanel::initStyle()
@@ -91,10 +93,12 @@ bool BackPanel::canMoveDown(int y)
 {
     //计算形状所占的最长的距离
     int d =4 - m_shape->trimDown();
-    int dy = (m_shape->getY() + y)/ Configuration::GRID_WIDTH;
+    int dy = (m_shape->getY())/ Configuration::GRID_WIDTH;
     int x = m_shape->getX() / Configuration::GRID_WIDTH;
+//qDebug() << "canMoveDown x:" << x;
 //qDebug() << "getY:" << m_shape->getY() << "\ty:" << y;
-    return !m_barrier->hasBrrerFromY(x, dy, m_shape);
+    bool flag = m_barrier->hasBrrerFromY(x, dy, m_shape);
+    return !flag;
 }
 
 bool BackPanel::canMoveXY(int x)
@@ -102,6 +106,24 @@ bool BackPanel::canMoveXY(int x)
     int dy = m_shape->getY()/ Configuration::GRID_WIDTH;
     int dx = (m_shape->getX() + x)/ Configuration::GRID_WIDTH;
     return !m_barrier->hasBarrerFromX(dx, dy, m_shape);
+}
+
+/**
+ * 线程安全的移动坐标
+ * @param x
+ * @param y
+ */
+void BackPanel::moveXY(int x, int y)
+{
+    m_mutex.lock();
+    if( x != -1)
+    {
+        m_shape->addX(x);
+    } else
+    {
+        m_shape->addY();
+    }
+    m_mutex.unlock();
 }
 
 
@@ -112,7 +134,8 @@ void BackPanel::shapeRun()
 {
 //qDebug() << "shape run...";
 //qDebug() << "m_shape:" << m_shape;
-    m_shape->addY();
+//    m_shape->addY();
+    moveXY(-1, Configuration::GRID_WIDTH);
     update();
 }
 
@@ -124,6 +147,7 @@ void BackPanel::acceptShape()
     m_barrier->accept(m_shape);
     m_shape->destroy();
     m_shape = new Shape;
+
     //判断是否有满行
     m_barrier->haveFullLine();
 }
@@ -186,16 +210,19 @@ void BackPanel::keyPressEvent(QKeyEvent *e)
     switch( k )
     {
     case Qt::Key_Left:
-        m_shape->addX(- Configuration::GRID_WIDTH);
+//        m_shape->addX(- Configuration::GRID_WIDTH);
+        moveXY(- Configuration::GRID_WIDTH, -1);
         break;
     case Qt::Key_Right:
-        m_shape->addX(Configuration::GRID_WIDTH);
+//        m_shape->addX(Configuration::GRID_WIDTH);
+        moveXY(Configuration::GRID_WIDTH, -1);
         break;
     case Qt::Key_Up:
         m_shape->nextShape();
         break;
     case Qt::Key_Down:
-        m_shape->addY();
+//        m_shape->addY();
+        moveXY(-1, Configuration::GRID_WIDTH);
         break;
     }
     update();

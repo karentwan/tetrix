@@ -2,6 +2,7 @@
 #define SHAPE_H
 
 #include <QObject>
+#include <QMutex>
 
 
 class QPainter;
@@ -39,6 +40,8 @@ public:
 
     void addY();
 
+    void addY(int y);
+
     void moveLeft();
 
     void moveRight();
@@ -54,6 +57,9 @@ public:
     void getBarrer(int b[19][15]);
 
     bool judgeShape(int i, int j) const;
+
+    ~Shape();
+
 
 signals:
 
@@ -76,6 +82,10 @@ private:
     int m_width, m_height;
 
     BackPanel *m_backPanel;
+
+    bool m_canMoveDown;     //能否往下移动
+
+
 
 };
 

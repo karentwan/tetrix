@@ -4,6 +4,7 @@
 #include <QPainter>
 #include "configuration.h"
 #include <QPen>
+#include <QThread>
 
 
 int Barrier::ROW = 19;
@@ -40,8 +41,6 @@ void Barrier::haveFullLine()
         bool flag = true;
         for(int j = 0; j < 15; j++)
         {
-//qDebug() << "j :" << j;
-//qDebug() << "m_barrers[i][j]:" << m_barrers[i][j];
             if( m_barrers[i][j] == 0)
             {
                 flag = false;
@@ -50,7 +49,8 @@ void Barrier::haveFullLine()
         }
         if( flag )
         {
-//qDebug() << "i:" << i;
+            //休眠
+//            QThread::msleep(500);
             deleteFullLine(i);
         }
     }
@@ -112,6 +112,7 @@ void Barrier::drawMe(QPainter &paint)
  */
 bool Barrier::hasBrrerFromY(int x, int y, Shape *s)
 {
+qDebug() << "hasBarrerFromY x:" << x << "\ty:" << y;
     m_mutex.lock();//加锁
     for(int i = 0; i < 4; i++)
     {
@@ -139,7 +140,7 @@ bool Barrier::hasBrrerFromY(int x, int y, Shape *s)
  */
 bool Barrier::hasBarrerFromX(int x, int y, Shape *s)
 {
-qDebug() << "x:" << x << "\ty:" << y;
+//qDebug() << "x:" << x << "\ty:" << y;
     for( int i = 0; i < 4; i++) //列
     {
         for(int j = 0; j < 4; j++)//行
@@ -169,5 +170,6 @@ void Barrier::clear()
 
 void Barrier::accept(Shape *shape)
 {
+qDebug() << "accept";
    shape->getBarrer(m_barrers);
 }

@@ -13,8 +13,6 @@ class Barrier : public QObject
 public:
     explicit Barrier(QObject *parent = 0);
 
-
-
     void drawMe(QPainter &paint);
 
     void accept(Shape *shape);
