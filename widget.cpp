@@ -28,14 +28,17 @@ void Widget::init()
     ui->BackPanel->setStyleSheet("QWidget#BackPanel{border:1px solid #ccc;}");
     m_backPanel = new BackPanel(this);
     //设置固定的大小
-    setFixedSize(Configuration::GRID_WIDTH * ( Configuration::COLUMN * 2 - 1),
-                 Configuration::GRID_WIDTH * Configuration::ROW);
+//    setFixedSize(Configuration::GRID_WIDTH * ( Configuration::COLUMN * 2 - 1),
+//                 Configuration::GRID_WIDTH * Configuration::ROW);
+    setSizeIncrement(Configuration::GRID_WIDTH * ( Configuration::COLUMN * 2 - 1),
+                        Configuration::GRID_WIDTH * Configuration::ROW);
     QHBoxLayout *rightLay = new QHBoxLayout(ui->BackPanel);
     rightLay->setContentsMargins(0, 0, 0, 0);
     rightLay->setSpacing(0);
     rightLay->addWidget(m_backPanel);
     ui->BackPanel->setLayout(rightLay);
-
+    //设置固定值
+    m_backPanel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     //连接信号和槽
     connect(ui->setBackgroundBtn, SIGNAL(clicked()), this, SLOT(openColorDialog()));

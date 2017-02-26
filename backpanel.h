@@ -55,6 +55,8 @@ public:
 
     void addScore();
 
+    QSize sizeHint() const;
+
     /*
      * 判断Shape能不能向左右两边移动
      */

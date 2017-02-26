@@ -63,6 +63,13 @@ void BackPanel::setStart(bool s)
     m_start = s;
 }
 
+QSize BackPanel::sizeHint() const
+{
+    int w = Configuration::GRID_WIDTH * 15;
+    int h = Configuration::GRID_WIDTH * 19;
+    return QSize(w, h);
+}
+
 void BackPanel::init()
 {
     m_back = true;
@@ -84,6 +91,7 @@ void BackPanel::resizeEvent(QResizeEvent *e)
     QWidget::resizeEvent(e);
 //qDebug() << "resize Event!";
 //    m_shape->setWH(geometry().width(), geometry().height());
+//    int h = geometry().height();
     m_shape->setWH(geometry().width(), 475);
 }
 
