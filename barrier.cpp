@@ -5,6 +5,7 @@
 #include "configuration.h"
 #include <QPen>
 #include <QThread>
+#include "backpanel.h"
 
 
 int Barrier::ROW = 19;
@@ -56,6 +57,11 @@ void Barrier::haveFullLine()
     }
 }
 
+void Barrier::setBackPanel(BackPanel *b)
+{
+    m_parent = b;
+}
+
 /**
  * 删除满行
  * @param i 行坐标
@@ -76,6 +82,8 @@ void Barrier::deleteFullLine(int i)
             m_barrers[k][j] = m_barrers[k-1][j];
         }
     }
+    //删除满行之后增加分数
+    m_parent->addScore();
 }
 
 /**
@@ -112,7 +120,7 @@ void Barrier::drawMe(QPainter &paint)
  */
 bool Barrier::hasBrrerFromY(int x, int y, Shape *s)
 {
-qDebug() << "hasBarrerFromY x:" << x << "\ty:" << y;
+//qDebug() << "hasBarrerFromY x:" << x << "\ty:" << y;
     m_mutex.lock();//加锁
     for(int i = 0; i < 4; i++)
     {
@@ -147,14 +155,15 @@ bool Barrier::hasBarrerFromX(int x, int y, Shape *s)
         {
             if( m_barrers[j+y][i+x] == 1 && s->judgeShape(j, i))
             {
-qDebug() << "j+y:" << j+y << "\ti+x:" << i+x;
-qDebug() << "m_barrers[j+y][i+x]:" << m_barrers[j+y][i+x];
+//qDebug() << "j+y:" << j+y << "\ti+x:" << i+x;
+//qDebug() << "m_barrers[j+y][i+x]:" << m_barrers[j+y][i+x];
                 return true;
             }
         }
     }
     return false;
 }
+
 
 void Barrier::clear()
 {
@@ -170,6 +179,15 @@ void Barrier::clear()
 
 void Barrier::accept(Shape *shape)
 {
-qDebug() << "accept";
+//qDebug() << "accept";
    shape->getBarrer(m_barrers);
+   //接受之后判断是否游戏结束
+   for(int i = 0; i < 15; i++)
+   {
+       if( m_barrers[0][i] == 1)
+       {
+           m_parent->gameOver();
+           return;
+       }
+   }
 }

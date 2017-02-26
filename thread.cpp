@@ -39,18 +39,13 @@ void Thread::setRun(bool r)
 
 void Thread::run()
 {
-//qDebug() << "m_run:" << m_run;
     //线程运行
     while( m_run )
     {
-
         msleep(m_sleepTime);
-//qDebug() << "run....";
         if( !m_suspend )
         {
             m_backPanel->shapeRun();
         }
-//qDebug() << "m_backPanel:" << m_backPanel;
-
     }
 }

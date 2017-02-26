@@ -26,6 +26,11 @@ class Widget : public QWidget
 
 public:
     explicit Widget(QWidget *parent = 0);
+
+    void setScore(int score);
+
+    void suspend();
+
     ~Widget();
 
 private :
@@ -46,8 +51,6 @@ private slots:
     void on_startGameBtn_clicked();
 
     void on_suspendGameBtn_clicked();
-
-    void on_stopGameBtn_clicked();
 
     void on_comboBox_currentIndexChanged(int index);
 

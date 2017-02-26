@@ -42,12 +42,6 @@ public:
 
     void addY(int y);
 
-    void moveLeft();
-
-    void moveRight();
-
-    void moveDown();
-
     void destroy();
 
     void nextShape();
@@ -84,8 +78,6 @@ private:
     BackPanel *m_backPanel;
 
     bool m_canMoveDown;     //能否往下移动
-
-
 
 };
 

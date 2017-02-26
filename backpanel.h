@@ -7,6 +7,8 @@
 #include "thread.h"
 #include <QMutex>
 
+class Widget;
+
 class BackPanel : public QWidget
 {
     Q_OBJECT
@@ -48,6 +50,10 @@ public:
     void setStart(bool s);
     //设置游戏水平
     void setGameLevel(int g);
+    //游戏结束
+    void gameOver();
+
+    void addScore();
 
     /*
      * 判断Shape能不能向左右两边移动
@@ -69,6 +75,8 @@ private:
 
     void drawChild(QPainter &paint);
 
+    void drawGameOver(QPainter &paint);
+
 
 private:
     bool m_net;         //显示网格
@@ -83,6 +91,13 @@ private:
 
     QMutex m_mutex;     //线程锁
 
+    Widget *m_parent;   //Widget类
+
+    int m_gameLevel;    //游戏水平
+
+    int m_score;        //游戏分数
+
+    bool m_gameOver;    //游戏是否结束
 
 };
 

@@ -334,7 +334,7 @@ int Shape::trimRight()
 bool Shape::canAddY(int y)
 {
     int r = m_y;
-qDebug() << "canAddY :" << y;
+//qDebug() << "canAddY :" << y;
     bool flag = m_backPanel->canMoveDown(y);
 //qDebug() << "flag:" << flag;
     int d = m_y + y + (4 - trimDown()) * Configuration::GRID_WIDTH;

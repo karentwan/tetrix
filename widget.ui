@@ -28,7 +28,7 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout" stretch="8,3">
+     <layout class="QVBoxLayout" name="verticalLayout">
       <property name="spacing">
        <number>0</number>
       </property>
@@ -174,23 +174,10 @@
           </widget>
          </item>
          <item>
-          <widget class="QWidget" name="widget_2" native="true">
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
-            <item>
-             <widget class="QPushButton" name="stopGameBtn">
-              <property name="text">
-               <string>停止游戏</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="suspendGameBtn">
-              <property name="text">
-               <string>暂停游戏</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+          <widget class="QPushButton" name="suspendGameBtn">
+           <property name="text">
+            <string>暂停游戏</string>
+           </property>
           </widget>
          </item>
          <item>
@@ -214,7 +201,17 @@
         <property name="title">
          <string>说明</string>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <item>
+          <widget class="QLabel" name="score">
+           <property name="text">
+            <string>分数:0</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
          <item>
           <widget class="QLabel" name="label">
            <property name="text">

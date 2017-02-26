@@ -6,6 +6,7 @@
 
 class QPainter;
 class Shape;
+class BackPanel;
 
 class Barrier : public QObject
 {
@@ -28,6 +29,8 @@ public:
 
     void haveFullLine();
 
+    void setBackPanel(BackPanel *b);
+
 private:
     void init();
 
@@ -39,11 +42,10 @@ private :
 
     static int ROW;
     static int COLUMN;
-
     int m_barrers[19][15];
 
     QMutex m_mutex;         //线程锁
-
+    BackPanel *m_parent;
 };
 
 #endif // BARRIER_H

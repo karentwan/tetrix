@@ -4,6 +4,8 @@
 #include <QPainter>
 #include <QStyleOption>
 #include <QKeyEvent>
+#include "widget.h"
+#include <QFont>
 
 
 BackPanel::BackPanel(QWidget *parent) :
@@ -16,11 +18,28 @@ BackPanel::BackPanel(QWidget *parent) :
     //获得焦点
     setFocus();
     m_start = false;
+    m_parent = static_cast<Widget *>(parent);
+    m_score = 0;
+    //游戏水平默认为1
+    m_gameLevel = 7;
+    m_barrier->setBackPanel(this);
+    m_gameOver = false;
 }
 
 void BackPanel::suspendOrRun()
 {
     m_thread->suspendOrRun();
+}
+
+/**
+ * 增加分数
+ */
+void BackPanel::addScore()
+{
+//qDebug() << "BackPanel::addScore invoke!";
+    int score = (8 - m_gameLevel) * 10;
+    m_score += score;
+    m_parent->setScore(m_score);
 }
 
 void BackPanel::stopGame()
@@ -99,6 +118,16 @@ bool BackPanel::canMoveDown(int y)
 //qDebug() << "getY:" << m_shape->getY() << "\ty:" << y;
     bool flag = m_barrier->hasBrrerFromY(x, dy, m_shape);
     return !flag;
+}
+
+/**
+ * 游戏结束
+ */
+void BackPanel::gameOver()
+{
+qDebug() << "game over";
+    m_thread->setRun(false);
+    m_gameOver = true;
 }
 
 bool BackPanel::canMoveXY(int x)
@@ -186,6 +215,27 @@ void BackPanel::paintEvent(QPaintEvent *e)
         drawNet(paint);
     drawChild(paint);
 
+    //如果游戏结束，那么绘制结束字样
+    if( m_gameOver )
+        drawGameOver(paint);
+
+}
+
+//绘制结束时的样式
+void BackPanel::drawGameOver(QPainter &paint)
+{
+    paint.save();
+    //设置画笔颜色为红色
+    paint.setPen(Qt::red);
+    //设置画笔的字体
+    QFont font;
+    font.setPointSize(30);
+
+    paint.setFont(font);
+
+    paint.drawText(rect(), Qt::AlignCenter, QStringLiteral("GAME OVER!SCORE:%1").arg(m_score));
+
+    paint.restore();
 }
 
 void BackPanel::startGame()
@@ -224,12 +274,21 @@ void BackPanel::keyPressEvent(QKeyEvent *e)
 //        m_shape->addY();
         moveXY(-1, Configuration::GRID_WIDTH);
         break;
+        //回车键
+    case Qt::Key_Enter:     //小键盘的enter键
+    case Qt::Key_Return:     //回车键
+//        qDebug() << "enter !";
+        m_parent->suspend();
+        break;
+
     }
     update();
 }
 
 void BackPanel::setGameLevel(int g)
 {
+    //保存游戏水平
+    m_gameLevel = g / 100;
     m_thread->setSleepTime(g);
 }
 
@@ -296,7 +355,9 @@ BackPanel::~BackPanel()
     }
     if( m_thread )
     {
-//qDebug() << "m_thread destroy!";
+qDebug() << "m_thread destroy!";
+        if( m_thread->isRunning() )
+            m_thread->quit();
         delete m_thread;
         m_thread = NULL;
     }

@@ -16,6 +16,11 @@ Widget::Widget(QWidget *parent) :
     setWindowTitle("俄罗斯方块");
 }
 
+void Widget::setScore(int score)
+{
+    ui->score->setText(QString("分数:%1").arg(score));
+}
+
 
 void Widget::init()
 {
@@ -77,9 +82,10 @@ void Widget::on_resumeBtn_clicked()
 void Widget::on_startGameBtn_clicked()
 {
     m_backPanel->startGame();
+    ui->startGameBtn->setEnabled(false);
 }
 
-void Widget::on_suspendGameBtn_clicked()
+void Widget::suspend()
 {
     QString s = ui->suspendGameBtn->text();
     if( s.contains("运行游戏"))
@@ -92,13 +98,26 @@ void Widget::on_suspendGameBtn_clicked()
     m_backPanel->suspendOrRun();
 }
 
-void Widget::on_stopGameBtn_clicked()
+void Widget::on_suspendGameBtn_clicked()
 {
-    m_backPanel->stopGame();
+//    QString s = ui->suspendGameBtn->text();
+//    if( s.contains("运行游戏"))
+//    {
+//        ui->suspendGameBtn->setText("暂停游戏");
+//    } else
+//    {
+//        ui->suspendGameBtn->setText("运行游戏");
+//    }
+//    m_backPanel->suspendOrRun();
+    suspend();
 }
 
 void Widget::on_comboBox_currentIndexChanged(int index)
 {
-qDebug() << "level :" << index;
+//qDebug() << "level :" << index;
     int g = 7 - index;
+    if( g <= 0 || g > 7 )
+        return;
+qDebug() << "g:" << g;
+    m_backPanel->setGameLevel(g * 100);
 }
