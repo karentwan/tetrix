@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QPushButton>
 #include <QColorDialog>
+#include <QDir>
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -92,8 +93,18 @@ void Widget::on_startGameBtn_clicked()
     ui->startGameBtn->setEnabled(false);
 
     m_play = new QMediaPlayer(this);
-    m_play->setMedia(QUrl::fromLocalFile(":/res/paopao.mp3"));
-  //  m_play->setVolume(50);
+    //必须使用绝对路径来播放音效，否则将会失效
+//    m_play->setMedia(QUrl::fromLocalFile("D:/QT_project/tetris/res/paopao.mp3"));
+    QDir temp(".\\res\\back.mp3");
+    QString absDir = temp.absolutePath();
+//qDebug() << "absDir:" << absDir;
+    m_list = new QMediaPlaylist;
+    m_list->addMedia(QUrl::fromLocalFile(absDir));
+   // m_list->addMedia(QUrl::fromLocalFile(":/res/back.mp3"));
+    m_list->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+    m_list->setCurrentIndex(1);
+    m_play->setPlaylist(m_list);
+//    m_play->setMedia(QUrl::fromLocalFile(absDir));
     m_play->play();
 }
 
