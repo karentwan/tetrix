@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/b2b_continue.wav</file>
+        <file>res/back.mp3</file>
+        <file>res/paopao.mp3</file>
+    </qresource>
+</RCC>

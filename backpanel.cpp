@@ -185,6 +185,9 @@ void BackPanel::acceptShape()
     m_shape->destroy();
     m_shape = new Shape;
 
+    m_shape->setBackPanel(this);
+    m_shape->setWH(geometry().width(), 475);
+
     //判断是否有满行
     m_barrier->haveFullLine();
 }

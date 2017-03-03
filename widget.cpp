@@ -14,6 +14,8 @@ Widget::Widget(QWidget *parent) :
     ui->setupUi(this);
     init();
     setWindowTitle("俄罗斯方块");
+
+
 }
 
 void Widget::setScore(int score)
@@ -39,6 +41,8 @@ void Widget::init()
     ui->BackPanel->setLayout(rightLay);
     //设置固定值
     m_backPanel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    //修改按钮的样式
+//    ui->startGameBtn->setStyleSheet("background-color:#a49ef0; border-color:#a49ef0;color:#fff;border-radius:5px;line-height:20px;");
 
     //连接信号和槽
     connect(ui->setBackgroundBtn, SIGNAL(clicked()), this, SLOT(openColorDialog()));
@@ -86,6 +90,11 @@ void Widget::on_startGameBtn_clicked()
 {
     m_backPanel->startGame();
     ui->startGameBtn->setEnabled(false);
+
+    m_play = new QMediaPlayer(this);
+    m_play->setMedia(QUrl::fromLocalFile(":/res/paopao.mp3"));
+  //  m_play->setVolume(50);
+    m_play->play();
 }
 
 void Widget::suspend()
@@ -103,15 +112,6 @@ void Widget::suspend()
 
 void Widget::on_suspendGameBtn_clicked()
 {
-//    QString s = ui->suspendGameBtn->text();
-//    if( s.contains("运行游戏"))
-//    {
-//        ui->suspendGameBtn->setText("暂停游戏");
-//    } else
-//    {
-//        ui->suspendGameBtn->setText("运行游戏");
-//    }
-//    m_backPanel->suspendOrRun();
     suspend();
 }
 

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "backpanel.h"
+#include <QMediaPlayer>
 
 namespace Ui {
 class Widget;
@@ -58,6 +59,7 @@ private:
     Ui::Widget *ui;
     BackPanel *m_backPanel;
     ColorBtnType m_colorBtn;
+    QMediaPlayer *m_play;
 };
 
 #endif // WIDGET_H

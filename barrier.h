@@ -35,8 +35,11 @@ private:
     void init();
 
 signals:
+    void deleteFinish();
 
 public slots:
+
+    void play();
 
 private :
 

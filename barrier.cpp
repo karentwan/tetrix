@@ -6,7 +6,7 @@
 #include <QPen>
 #include <QThread>
 #include "backpanel.h"
-
+#include <QSound>
 
 int Barrier::ROW = 19;
 
@@ -17,6 +17,8 @@ Barrier::Barrier(QObject *parent) :
     m_mutex()
 {
     init();
+
+    connect(this, SIGNAL(deleteFinish()), this, SLOT(play()), Qt::QueuedConnection);
 }
 
 void Barrier::init()
@@ -29,6 +31,11 @@ void Barrier::init()
             m_barrers[i][j] = 0;
         }
     }
+}
+
+void Barrier::play()
+{
+    QSound::play(":/res/b2b_continue.wav");
 }
 
 /**
@@ -52,6 +59,7 @@ void Barrier::haveFullLine()
         {
             //休眠
 //            QThread::msleep(500);
+            emit deleteFinish();
             deleteFullLine(i);
         }
     }
